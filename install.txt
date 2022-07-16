@@ -1,0 +1,7 @@
+ng new awesome-components --style=scss --skip-tests=true --routing
+cd awesome-components
+ng add @angular/material
+ng g m core
+ng g m shared
+ng g m social-media --routing
+ng g c core/components/header
