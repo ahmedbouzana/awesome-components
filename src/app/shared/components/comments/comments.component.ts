@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Comment } from 'src/app/core/models/comment.model';
 
@@ -10,6 +10,7 @@ import { Comment } from 'src/app/core/models/comment.model';
 export class CommentsComponent implements OnInit {
 
   @Input() comments!: Comment[];
+  @Output() newComment = new EventEmitter<string>();
   
   commentCtrl!: FormControl;
 
@@ -19,8 +20,12 @@ export class CommentsComponent implements OnInit {
     this.commentCtrl = this.formBuilder.control('', [Validators.required, Validators.minLength(10)]);
   }
 
-  onLeaveComment():void{
-
-  }
+  onLeaveComment() {
+    if (this.commentCtrl.invalid) {
+        return;
+    }
+    this.newComment.emit(this.commentCtrl.value);
+    this.commentCtrl.reset();
+}
 
 }
