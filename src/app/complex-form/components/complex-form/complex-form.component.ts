@@ -66,7 +66,8 @@ export class ComplexFormComponent implements OnInit {
       password: this.passwordCtrl,
       confirmPassword: this.confirmPasswordCtrl
     }, {
-      validators: [confirmEqualValidator('password', 'confirmPassword')]
+      validators: [confirmEqualValidator('password', 'confirmPassword')],
+      updateOn: 'blur'
     });
   }
 
@@ -113,13 +114,11 @@ export class ComplexFormComponent implements OnInit {
     if (showEmailCtrl) {
       this.emailCtrl.addValidators([
         Validators.required,
-        Validators.email,
-        validValidator()
+        Validators.email
       ]);
       this.confirmEmailCtrl.addValidators([
         Validators.required,
-        Validators.email,
-        validValidator()
+        Validators.email
       ]);
     } else {
       this.emailCtrl.clearValidators();
@@ -151,8 +150,6 @@ export class ComplexFormComponent implements OnInit {
       return 'Ce numéro de téléphone ne contient pas assez de chiffres';
     } else if (ctrl.hasError('maxlength')) {
       return 'Ce numéro de téléphone contient trop de chiffres';
-    } else if (ctrl.hasError('validValidator')) {
-      return 'Ce texte ne contient pas le mot VALID';
     } else {
       return 'Ce champ contient une erreur';
     }
