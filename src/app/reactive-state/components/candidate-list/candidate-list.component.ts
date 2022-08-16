@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { combineLatest, map, Observable, startWith } from 'rxjs';
 import { CandidateSearchType } from '../../enums/candidate-search-type.enum';
 import { Candidate } from '../../models/candidate.model';
 import { CandidatesService } from '../../services/candidates.service';
@@ -45,6 +45,26 @@ private initForm() {
 private initObservables() {
     this.loading$ = this.candidatesService.loading$;
     this.candidates$ = this.candidatesService.candidates$;
+
+    const search$ = this.searchCtrl.valueChanges.pipe(
+      startWith(this.searchCtrl.value),
+      map(value => value.toLowerCase())
+  );
+  const searchType$: Observable<CandidateSearchType> = this.searchTypeCtrl.valueChanges.pipe(
+    startWith(this.searchTypeCtrl.value)
+  );
+
+  this.candidates$ = combineLatest([
+    search$,
+    searchType$,
+    this.candidatesService.candidates$
+    ]
+).pipe(
+    map(([search, searchType, candidates]) => candidates.filter(candidate => candidate[searchType]
+        .toLowerCase()
+        .includes(search as string))
+    )
+);
 }
 
 }
