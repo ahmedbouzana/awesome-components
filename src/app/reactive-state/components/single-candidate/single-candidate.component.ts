@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, switchMap } from 'rxjs';
+import { map, Observable, switchMap, take, tap } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Candidate } from '../../models/candidate.model';
 import { CandidatesService } from '../../services/candidates.service';
 
@@ -34,12 +35,24 @@ onGoBack() {
   this.router.navigateByUrl('/reactive-state/candidates');
 }
 
-onHire(){
-
+onHire() {
+  this.candidate$.pipe(
+      take(1),
+      tap(candidate => {
+          this.candidatesService.hireCandidate(candidate.id);
+          this.onGoBack();
+      })
+  ).subscribe();
 }
 
-onRefuse(){
-  
+onRefuse() {
+  this.candidate$.pipe(
+      take(1),
+      tap(candidate => {
+          this.candidatesService.refuseCandidate(candidate.id);
+          this.onGoBack();
+      })
+  ).subscribe();
 }
 
 }
